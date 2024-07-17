@@ -46,9 +46,12 @@ jobs:
         artifacts: "package-${{github.ref_name}}.zip"
         token: ${{ secrets.YUVAL_TOKEN }}
         allowUpdates: true
-  #    run: python -m build
-  #  - name: Publish package
-  #    uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
- #     with:
- #       user: __token__
- #       password: ${{ secrets.PYPI_API_TOKEN }}
+        
+    - name: Log in to Docker Hub
+      run: echo ${{ secrets.PASSWORD }} | docker login -u ${{ secrets.USERNAME }} --password-stdin
+    - name: Push the image
+      run: docker push yuvalost/dockerworkshop:${{ github.run_number }}
+    - name: tag latest & push
+      run: |
+            docker push tag yuvalost/final-python:${{ github.run_number }} 
+            docker push yuvalost/final-python:latest
